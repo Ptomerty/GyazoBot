@@ -7,7 +7,7 @@ reddit = praw.Reddit('GyazoBot', user_agent='GyazoBot by derpherp128')
 allsubs = reddit.subreddit('ZXhwb3NlX2tyZXNfYmFv')
 reply_template = ('Hi, I\'m a bot that directly links Gyazo images.'
                   '\n\n{}\n\n'
-                  '^^[Creator](https://reddit.com/u/derpherp128)')
+                  '^^[Source](https://github.com/Ptomerty/GyazoBot) ^^| ^^[Why?](https://github.com/Ptomerty/GyazoBot/blob/master/README.md) ^^|  ^^[Creator](https://reddit.com/u/derpherp128)')
 
 
 def check_url(url):
