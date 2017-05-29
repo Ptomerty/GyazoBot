@@ -102,3 +102,6 @@ ENV/
 
 #praw ini settings w/ auth info
 praw.ini
+comments
+posts
+ignore
