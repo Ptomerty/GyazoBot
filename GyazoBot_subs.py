@@ -2,6 +2,7 @@ import praw
 import requests
 import os
 
+ignore = []
 
 def check_url(url):
     try:
@@ -30,6 +31,12 @@ def process(submission):
             else:
                 return ''
 
+def refreshIgnore():
+    global ignore
+    if os.path.isfile("./ignore"):
+        with open("./ignore", "r") as f:
+            for line in f:
+                ignore.append(line.split("\n")[0])
 
 def main():
     reply_template = ('Hi, I\'m a bot that links Gyazo images directly.'
@@ -37,15 +44,12 @@ def main():
                       '^^[Source](https://github.com/Ptomerty/GyazoBot) ^^| '
                       '^^[Why?](https://github.com/Ptomerty/GyazoBot/blob/master/README.md) ^^| '
                       '^^[Creator](https://np.reddit.com/u/derpherp128) ^^| '
-                      '^^[leave me alone](https://np.reddit.com/message/compose/?to=Gyazo_Bot'
+                      '^^[leavemealone](https://np.reddit.com/message/compose/?to=Gyazo_Bot'
                       '&subject=ignoreme&message=ignoreme)')
-    ignore = []
+    global ignore
     posts = []
 
-    if os.path.isfile("./ignore"):
-        with open("./ignore", "r") as f:
-            for line in f:
-                ignore.append(line.split("\n")[0])
+    refreshIgnore()
 
     if os.path.isfile("./posts"):
         with open("./posts", "r") as f:
@@ -54,6 +58,7 @@ def main():
 
     reddit = praw.Reddit('GyazoBot', user_agent='GyazoBot by derpherp128')
     for submission in reddit.subreddit('all').stream.submissions():
+        refreshIgnore()
         if not submission.author in ignore and not submission.id in posts:
             fixed = process(submission)
             if fixed is not '' and fixed is not None:
