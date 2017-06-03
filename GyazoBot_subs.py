@@ -5,7 +5,7 @@ import time
 import praw.exceptions
 
 ignore = []
-
+mtime = 0
 
 def check_url(url):
     try:
