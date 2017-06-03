@@ -4,6 +4,7 @@ import os
 
 ignore = []
 
+
 def check_url(url):
     try:
         r = requests.get(url)
@@ -31,12 +32,18 @@ def process(submission):
             else:
                 return ''
 
+
 def refreshIgnore():
     global ignore
-    if os.path.isfile("./ignore"):
+    global mtime
+    if os.path.isfile("./ignore") and os.path.getmtime("./ignore") != mtime:
         with open("./ignore", "r") as f:
             for line in f:
-                ignore.append(line.split("\n")[0])
+                item = line.split("\n")[0]
+                if item not in ignore:
+                    ignore.append(item)
+        mtime = os.path.getmtime("./ignore")
+
 
 def main():
     reply_template = ('Hi, I\'m a bot that links Gyazo images directly.'
