@@ -2,6 +2,8 @@ import praw
 import requests
 import re
 import os
+import praw.exceptions
+import time
 
 ignore = []
 mtime = 0
@@ -75,13 +77,18 @@ def main():
                     if (fixed != '' and fixed != None):
                         a += process(url) + '\n\n'
                 if a != reply_template_header:  # make sure there's an actual fixed link
-                    a += reply_template_footer
-                    comment.reply(a)
-                    comments.append(comment.id)
-                    with open("./comments", "a+") as cmtfs:
-                        cmtfs.write('{0}\n'.format(comment.id))
-                        cmtfs.flush()
-                        os.fsync(cmtfs.fileno())
+                    try:
+                        a += reply_template_footer
+                        comment.reply(a)
+                        comments.append(comment.id)
+                        with open("./comments", "a+") as cmtfs:
+                            cmtfs.write('{0}\n'.format(comment.id))
+                            cmtfs.flush()
+                            os.fsync(cmtfs.fileno())
+                    except praw.exceptions.APIException:
+                        time.sleep(60 * 10)  # ratelimit hit
+                    except:
+                        print('Non-ratelimit error!')
 
 
 if __name__ == '__main__':

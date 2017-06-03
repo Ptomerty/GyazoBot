@@ -1,6 +1,8 @@
 import praw
 import requests
 import os
+import time
+import praw.exceptions
 
 ignore = []
 
@@ -70,12 +72,17 @@ def main():
             fixed = process(submission)
             if fixed is not '' and fixed is not None:
                 reply_text = reply_template.format(process(submission))
-                submission.reply(reply_text)
-                posts.append(submission.id)
-                with open("./posts", "a+") as postfs:
-                    postfs.write('{0}\n'.format(submission.id))
-                    postfs.flush()
-                    os.fsync(postfs.fileno())
+                try:
+                    submission.reply(reply_text)
+                    posts.append(submission.id)
+                    with open("./posts", "a+") as postfs:
+                        postfs.write('{0}\n'.format(submission.id))
+                        postfs.flush()
+                        os.fsync(postfs.fileno())
+                except praw.exceptions.APIException:
+                    time.sleep(60 * 10) #ratelimit hit
+                except:
+                    print('Non-ratelimit error!')
 
 
 if __name__ == '__main__':
