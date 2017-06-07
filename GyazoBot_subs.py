@@ -70,11 +70,16 @@ def main():
         refreshIgnore()
         if not submission.author in ignore and not submission.id in posts:
             fixed = process(submission)
-            if fixed is not '' and fixed is not None:
+            if fixed is not '' and fixed is not None and fixed not in submission.url:
                 reply_text = reply_template.format(process(submission))
                 try:
                     submission.reply(reply_text)
                     posts.append(submission.id)
+                    with open("./postlog", "a+") as cmtfs:
+                        cmtfs.write('{0}\n'.format(submission.id))
+                        cmtfs.write('{0}\n'.format(fixed))
+                        cmtfs.flush()
+                        os.fsync(cmtfs.fileno())
                     with open("./posts", "a+") as postfs:
                         postfs.write('{0}\n'.format(submission.id))
                         postfs.flush()
