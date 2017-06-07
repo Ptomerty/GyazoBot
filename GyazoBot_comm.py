@@ -46,10 +46,17 @@ def refreshIgnore():
 
 
 def main():
-    reddit = praw.Reddit('GyazoBot', user_agent='GyazoBot by derpherp128')
+    #reddit = praw.Reddit('GyazoBot', user_agent='GyazoBot by derpherp128')
 
     regex = '(?<!\w\.)gyazo\.com/\w{32}'
+    body = ('> The auto banning makes no fucking sense. Sub participation shouldn\'t be grounds for a banning...' 
+'Thought Police/thought crime. To treat outside opinions and legitimate criticism as criminal offenses. Subs that use those unethical means want echo chambers.' 
+'Not sure if the bot is bugged or going a banning rampage. Apparently r/TwoXChromosomes\'s auto ban also getting easily triggered? So much for equality or tolerances. They irony is that they are the one\'s blindly instigating trouble.'
+'https://i.gyazo.com/d0c72c306c7a9f61b27b359be1bb5799.png')
 
+    print(re.findall(regex, body))
+
+    exit(1)
     reply_template_header = ('Hi, I\'m a bot that links Gyazo images directly.\n\n')
     reply_template_footer = ('^^[Source](https://github.com/Ptomerty/GyazoBot) ^^| '
                              '^^[Why?](https://github.com/Ptomerty/GyazoBot/blob/master/README.md) ^^| '
@@ -74,13 +81,19 @@ def main():
                 a = reply_template_header
                 for url in list:
                     fixed = process(url)
-                    if (fixed != '' and fixed != None):
+                    if fixed != '' and fixed != None and fixed not in comment.body:
                         a += process(url) + '\n\n'
                 if a != reply_template_header:  # make sure there's an actual fixed link
                     try:
                         a += reply_template_footer
                         comment.reply(a)
                         comments.append(comment.id)
+                        with open("./commentlog", "a+") as cmtfs:
+                            cmtfs.write('{0}\n'.format(comment.id))
+                            for url in list:
+                                cmtfs.write('{0}\n'.format(url))
+                            cmtfs.flush()
+                            os.fsync(cmtfs.fileno())
                         with open("./comments", "a+") as cmtfs:
                             cmtfs.write('{0}\n'.format(comment.id))
                             cmtfs.flush()
