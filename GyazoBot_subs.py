@@ -77,7 +77,7 @@ def main():
                     posts.append(submission.id)
                     with open("./postlog", "a+") as cmtfs:
                         cmtfs.write('{0}\n'.format(submission.id))
-                        cmtfs.write('{0}\n'.format(fixed))
+                        cmtfs.write('{0}\n'.format(submission.url))
                         cmtfs.flush()
                         os.fsync(cmtfs.fileno())
                     with open("./posts", "a+") as postfs:
