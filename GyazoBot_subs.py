@@ -1,8 +1,9 @@
 import praw
+import praw.exceptions
 import requests
+import requests.exceptions
 import os
 import time
-import praw.exceptions
 import sys
 
 from imgurpython import ImgurClient
@@ -97,14 +98,19 @@ def main():
                                 postfs.flush()
                                 os.fsync(postfs.fileno())
                         except praw.exceptions.APIException:
-                            time.sleep(60 * 10) #ratelimit hit
+                                time.sleep(60 * 10)  # ratelimit hit
+                        except requests.exceptions.ReadTimeout:
+                            # misc timeout
+                            print("timeout error")
+                            pass
                         except Exception as e:
-                            print('Non-ratelimit error!\n{0}'.format(e))
-                            time.sleep(60 * 1)  # probably timeout
-        except Exception as e:
+                            print(e)
+        except requests.exceptions.ReadTimeout:
             # misc timeout
-            print("timeout error?\n{0}".format(e))
-            time.sleep(45)  # "timed out error"
+            print("timeout error")
+            pass
+        except Exception as e:
+            print(e)
 
 if __name__ == '__main__':
     main()

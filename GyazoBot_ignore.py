@@ -1,6 +1,7 @@
 import praw
 import os
 import praw.models
+import requests.exceptions
 
 ignore = []
 
@@ -24,15 +25,18 @@ def main():
         with open("./ignore", "r") as f:
             for line in f:
                 ignore.append(line.split("\n")[0])
-    try:
-        for item in reddit.inbox.stream():
-            if isinstance(item, praw.models.Message):
-                checkMsg(item)
-                item.mark_read()
-    except:
-        # misc timeout
-        time.sleep(45)  # "timed out error"
-        print("timeout error?");
+    while True:
+        try:
+            for item in reddit.inbox.stream():
+                if isinstance(item, praw.models.Message):
+                    checkMsg(item)
+                    item.mark_read()
+        except requests.exceptions.ReadTimeout:
+            # misc timeout
+            print("timeout error")
+            pass
+        except Exception as e:
+            print(e)
 
 
 if __name__ == '__main__':
