@@ -84,7 +84,7 @@ def main():
                     a = reply_template_header
                     for url in list:
                         fixed = process(url)
-                        fixedimgur = client.upload_from_url(fixed)['link'];
+                        fixedimgur = client.upload_from_url(fixed)['link']
                         if fixed != '' and fixed != None and fixed not in comment.body:
                             a += 'Direct link: ' + fixed + '\n\nImgur mirror: ' + fixedimgur + '\n\n'
                     if a != reply_template_header:  # make sure there's an actual fixed link
@@ -110,7 +110,8 @@ def main():
     except:
         #misc timeout
         time.sleep(45)  # "timed out error"
-        print("timeout error?");
+        print("timeout error?")
+        main()
 
 if __name__ == '__main__':
     main()

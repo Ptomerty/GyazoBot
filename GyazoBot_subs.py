@@ -80,8 +80,8 @@ def main():
             if not submission.author in ignore and not submission.id in posts:
                 fixed = process(submission)
                 if fixed is not '' and fixed is not None and fixed not in submission.url:
-                    link = process(submission);
-                    imgurlink = client.upload_from_url(link)['link'];
+                    link = process(submission)
+                    imgurlink = client.upload_from_url(link)['link']
                     reply_text = reply_template.format(link, imgurlink)
                     try:
                         submission.reply(reply_text)
@@ -103,7 +103,8 @@ def main():
     except:
         #misc timeout
         time.sleep(45)  # "timed out error"
-        print("timeout error?");
+        print("timeout error?")
+        main()
 
 
 if __name__ == '__main__':
