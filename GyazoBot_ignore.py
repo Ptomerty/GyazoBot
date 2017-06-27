@@ -24,11 +24,14 @@ def main():
         with open("./ignore", "r") as f:
             for line in f:
                 ignore.append(line.split("\n")[0])
-
-    for item in reddit.inbox.stream():
-        if isinstance(item, praw.models.Message):
-            checkMsg(item)
-            item.mark_read()
+    try:
+        for item in reddit.inbox.stream():
+            if isinstance(item, praw.models.Message):
+                checkMsg(item)
+                item.mark_read()
+    except:
+    # misc timeout
+    time.sleep(60 * 3)  # "timed out error"
 
 
 if __name__ == '__main__':

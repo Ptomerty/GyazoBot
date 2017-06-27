@@ -3,6 +3,9 @@ import requests
 import os
 import time
 import praw.exceptions
+import sys
+
+from imgurpython import ImgurClient
 
 ignore = []
 mtime = 0
@@ -49,7 +52,7 @@ def refreshIgnore():
 
 def main():
     reply_template = ('Hi, I\'m a bot that links Gyazo images directly.'
-                      '\n\n{}\n\n'
+                      '\n\n{}\n\n{}\n\n'
                       '^^[Source](https://github.com/Ptomerty/GyazoBot) ^^| '
                       '^^[Why?](https://github.com/Ptomerty/GyazoBot/blob/master/README.md) ^^| '
                       '^^[Creator](https://np.reddit.com/u/derpherp128) ^^| '
@@ -65,29 +68,41 @@ def main():
             for line in f:
                 posts.append(line.split("\n")[0])
 
+    client_id = sys.argv[1]
+    client_secret = sys.argv[2]
+
+    client = ImgurClient(client_id, client_secret)
+
     reddit = praw.Reddit('GyazoBot', user_agent='GyazoBot by derpherp128')
-    for submission in reddit.subreddit('all').stream.submissions():
-        refreshIgnore()
-        if not submission.author in ignore and not submission.id in posts:
-            fixed = process(submission)
-            if fixed is not '' and fixed is not None and fixed not in submission.url:
-                reply_text = reply_template.format(process(submission))
-                try:
-                    submission.reply(reply_text)
-                    posts.append(submission.id)
-                    with open("./postlog", "a+") as cmtfs:
-                        cmtfs.write('{0}\n'.format(submission.id))
-                        cmtfs.write('{0}\n'.format(submission.url))
-                        cmtfs.flush()
-                        os.fsync(cmtfs.fileno())
-                    with open("./posts", "a+") as postfs:
-                        postfs.write('{0}\n'.format(submission.id))
-                        postfs.flush()
-                        os.fsync(postfs.fileno())
-                except praw.exceptions.APIException:
-                    time.sleep(60 * 10) #ratelimit hit
-                except:
-                    print('Non-ratelimit error!')
+    try:
+        for submission in reddit.subreddit('all').stream.submissions():
+            refreshIgnore()
+            if not submission.author in ignore and not submission.id in posts:
+                fixed = process(submission)
+                if fixed is not '' and fixed is not None and fixed not in submission.url:
+                    link = process(submission);
+                    imgurlink = client.upload_from_url(link)['link'];
+                    reply_text = reply_template.format(link, imgurlink)
+                    try:
+                        submission.reply(reply_text)
+                        posts.append(submission.id)
+                        with open("./postlog", "a+") as cmtfs:
+                            cmtfs.write('{0}\n'.format(submission.id))
+                            cmtfs.write('{0}\n'.format(submission.url))
+                            cmtfs.flush()
+                            os.fsync(cmtfs.fileno())
+                        with open("./posts", "a+") as postfs:
+                            postfs.write('{0}\n'.format(submission.id))
+                            postfs.flush()
+                            os.fsync(postfs.fileno())
+                    except praw.exceptions.APIException:
+                        time.sleep(60 * 10) #ratelimit hit
+                    except:
+                        print('Non-ratelimit error!')
+                        time.sleep(60 * 1)  # probably timeout
+    except:
+        #misc timeout
+        time.sleep(60 * 3)  # "timed out error"
 
 
 if __name__ == '__main__':
