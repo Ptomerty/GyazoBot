@@ -74,7 +74,7 @@ def main():
     client = ImgurClient(client_id, client_secret)
 
     reddit = praw.Reddit('GyazoBot', user_agent='GyazoBot by derpherp128')
-    while true:
+    while True:
         try:
             for submission in reddit.subreddit('all').stream.submissions():
                 refreshIgnore()
