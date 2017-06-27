@@ -74,38 +74,37 @@ def main():
     client = ImgurClient(client_id, client_secret)
 
     reddit = praw.Reddit('GyazoBot', user_agent='GyazoBot by derpherp128')
-    try:
-        for submission in reddit.subreddit('all').stream.submissions():
-            refreshIgnore()
-            if not submission.author in ignore and not submission.id in posts:
-                fixed = process(submission)
-                if fixed is not '' and fixed is not None and fixed not in submission.url:
-                    link = process(submission)
-                    imgurlink = client.upload_from_url(link)['link']
-                    reply_text = reply_template.format(link, imgurlink)
-                    try:
-                        submission.reply(reply_text)
-                        posts.append(submission.id)
-                        with open("./postlog", "a+") as cmtfs:
-                            cmtfs.write('{0}\n'.format(submission.id))
-                            cmtfs.write('{0}\n'.format(submission.url))
-                            cmtfs.flush()
-                            os.fsync(cmtfs.fileno())
-                        with open("./posts", "a+") as postfs:
-                            postfs.write('{0}\n'.format(submission.id))
-                            postfs.flush()
-                            os.fsync(postfs.fileno())
-                    except praw.exceptions.APIException:
-                        time.sleep(60 * 10) #ratelimit hit
-                    except:
-                        print('Non-ratelimit error!')
-                        time.sleep(60 * 1)  # probably timeout
-    except:
-        #misc timeout
-        time.sleep(45)  # "timed out error"
-        print("timeout error?")
-        main()
-
+    while true:
+        try:
+            for submission in reddit.subreddit('all').stream.submissions():
+                refreshIgnore()
+                if not submission.author in ignore and not submission.id in posts:
+                    fixed = process(submission)
+                    if fixed is not '' and fixed is not None and fixed not in submission.url:
+                        link = process(submission)
+                        imgurlink = client.upload_from_url(link)['link']
+                        reply_text = reply_template.format(link, imgurlink)
+                        try:
+                            submission.reply(reply_text)
+                            posts.append(submission.id)
+                            with open("./postlog", "a+") as cmtfs:
+                                cmtfs.write('{0}\n'.format(submission.id))
+                                cmtfs.write('{0}\n'.format(submission.url))
+                                cmtfs.flush()
+                                os.fsync(cmtfs.fileno())
+                            with open("./posts", "a+") as postfs:
+                                postfs.write('{0}\n'.format(submission.id))
+                                postfs.flush()
+                                os.fsync(postfs.fileno())
+                        except praw.exceptions.APIException:
+                            time.sleep(60 * 10) #ratelimit hit
+                        except Exception as e:
+                            print('Non-ratelimit error!\n{0}'.format(e))
+                            time.sleep(60 * 1)  # probably timeout
+        except Exception as e:
+            # misc timeout
+            print("timeout error?\n{0}".format(e))
+            time.sleep(45)  # "timed out error"
 
 if __name__ == '__main__':
     main()
