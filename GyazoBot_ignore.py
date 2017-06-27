@@ -31,7 +31,8 @@ def main():
                 item.mark_read()
     except:
         # misc timeout
-        time.sleep(60 * 3)  # "timed out error"
+        time.sleep(45)  # "timed out error"
+        print("timeout error?");
 
 
 if __name__ == '__main__':
