@@ -75,43 +75,44 @@ def main():
         with open("./comments", "r") as f:
             for line in f:
                 comments.append(line.split("\n")[0])
-    try:
-        for comment in reddit.subreddit('all').stream.comments():
-            refreshIgnore()
-            if comment.author not in ignore and comment.id not in comments:
-                list = re.findall(regex, comment.body)
-                if list:
-                    a = reply_template_header
-                    for url in list:
-                        fixed = process(url)
-                        fixedimgur = client.upload_from_url(fixed)['link']
-                        if fixed != '' and fixed != None and fixed not in comment.body:
-                            a += 'Direct link: ' + fixed + '\n\nImgur mirror: ' + fixedimgur + '\n\n'
-                    if a != reply_template_header:  # make sure there's an actual fixed link
-                        try:
-                            a += reply_template_footer
-                            comment.reply(a)
-                            comments.append(comment.id)
-                            with open("./commentlog", "a+") as cmtfs:
-                                cmtfs.write('{0}\n'.format(comment.id))
-                                for url in list:
-                                    cmtfs.write('{0}\n'.format(url))
-                                cmtfs.flush()
-                                os.fsync(cmtfs.fileno())
-                            with open("./comments", "a+") as cmtfs:
-                                cmtfs.write('{0}\n'.format(comment.id))
-                                cmtfs.flush()
-                                os.fsync(cmtfs.fileno())
-                        except praw.exceptions.APIException:
-                            time.sleep(60 * 10)  # ratelimit hit
-                        except:
-                            print('Non-ratelimit error!')
-                            time.sleep(60 * 1)  # probably timeout
-    except:
-        #misc timeout
-        time.sleep(45)  # "timed out error"
-        print("timeout error?")
-        main()
+    while true:
+        try:
+            for comment in reddit.subreddit('all').stream.comments():
+                refreshIgnore()
+                if comment.author not in ignore and comment.id not in comments:
+                    list = re.findall(regex, comment.body)
+                    if list:
+                        a = reply_template_header
+                        for url in list:
+                            fixed = process(url)
+                            fixedimgur = client.upload_from_url(fixed)['link']
+                            if fixed != '' and fixed != None and fixed not in comment.body:
+                                a += 'Direct link: ' + fixed + '\n\nImgur mirror: ' + fixedimgur + '\n\n'
+                        if a != reply_template_header:  # make sure there's an actual fixed link
+                            try:
+                                a += reply_template_footer
+                                comment.reply(a)
+                                comments.append(comment.id)
+                                with open("./commentlog", "a+") as cmtfs:
+                                    cmtfs.write('{0}\n'.format(comment.id))
+                                    for url in list:
+                                        cmtfs.write('{0}\n'.format(url))
+                                    cmtfs.flush()
+                                    os.fsync(cmtfs.fileno())
+                                with open("./comments", "a+") as cmtfs:
+                                    cmtfs.write('{0}\n'.format(comment.id))
+                                    cmtfs.flush()
+                                    os.fsync(cmtfs.fileno())
+                            except praw.exceptions.APIException:
+                                time.sleep(60 * 10)  # ratelimit hit
+                            except Exception as e:
+                                print('Non-ratelimit error!\n{0}'.format(e))
+                                time.sleep(60 * 1)  # probably timeout
+        except Exception as e:
+            #misc timeout
+            print("timeout error?\n{0}".format(e))
+            time.sleep(45)  # "timed out error"
+
 
 if __name__ == '__main__':
     main()
