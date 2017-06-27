@@ -51,9 +51,9 @@ def refreshIgnore():
 
 
 def main():
-    reply_template = ('Hi, I\'m a bot that links Gyazo images directly.'
-                      '\n\n{}\n\n{}\n\n'
-                      '^^[Source](https://github.com/Ptomerty/GyazoBot) ^^| '
+    reply_template = ('Hi, I\'m a bot that fixes Gyazo images for mobile users.'
+                      '\n\nDirect link: {}\n\nImgur mirror: {}\n\n'
+                      '^^[Sourcev2](https://github.com/Ptomerty/GyazoBot) ^^| '
                       '^^[Why?](https://github.com/Ptomerty/GyazoBot/blob/master/README.md) ^^| '
                       '^^[Creator](https://np.reddit.com/u/derpherp128) ^^| '
                       '^^[leavemealone](https://np.reddit.com/message/compose/?to=Gyazo_Bot'

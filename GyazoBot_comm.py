@@ -60,8 +60,8 @@ def main():
 
     regex = '(?<!\w\.)gyazo\.com/\w{32}'
 
-    reply_template_header = ('Hi, I\'m a bot that links Gyazo images directly.\n\n')
-    reply_template_footer = ('^^[Source](https://github.com/Ptomerty/GyazoBot) ^^| '
+    reply_template_header = ('Hi, I\'m a bot that fixes Gyazo images for mobile users.\n\n')
+    reply_template_footer = ('^^[Sourcev2](https://github.com/Ptomerty/GyazoBot) ^^| '
                              '^^[Why?](https://github.com/Ptomerty/GyazoBot/blob/master/README.md) ^^| '
                              '^^[Creator](https://np.reddit.com/u/derpherp128) ^^| '
                              '^^[leavemealone](https://np.reddit.com/message/compose/?to=Gyazo_Bot'
@@ -86,7 +86,7 @@ def main():
                         fixed = process(url)
                         fixedimgur = client.upload_from_url(fixed)['link'];
                         if fixed != '' and fixed != None and fixed not in comment.body:
-                            a += fixed + '\n\n' + fixedimgur + '\n\n'
+                            a += 'Direct link: ' + fixed + '\n\nImgur mirror: ' + fixedimgur + '\n\n'
                     if a != reply_template_header:  # make sure there's an actual fixed link
                         try:
                             a += reply_template_footer
