@@ -30,8 +30,8 @@ def main():
                 checkMsg(item)
                 item.mark_read()
     except:
-    # misc timeout
-    time.sleep(60 * 3)  # "timed out error"
+        # misc timeout
+        time.sleep(60 * 3)  # "timed out error"
 
 
 if __name__ == '__main__':
