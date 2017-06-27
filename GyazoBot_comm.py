@@ -75,7 +75,7 @@ def main():
         with open("./comments", "r") as f:
             for line in f:
                 comments.append(line.split("\n")[0])
-    while true:
+    while True:
         try:
             for comment in reddit.subreddit('all').stream.comments():
                 refreshIgnore()
