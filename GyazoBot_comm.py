@@ -88,7 +88,7 @@ def main():
                 if comment.author not in ignore and comment.id not in comments:
                     list = re.findall(regex, comment.body)
                     if list:
-                        print('comment found')
+                        print('bad comment found')
                         a = reply_template_header
                         for url in list:
                             fixed = process(url)
@@ -99,8 +99,9 @@ def main():
                             try:
                                 a += reply_template_footer
                                 newpost = comment.reply(a)
+                                print('replied')
                                 newpost.edit(edit_header.format(id=newpost.fullname.split('_')[1]) + newpost.body)
-
+                                print('edited')
                                 comments.append(comment.id)
                                 with open("./commentlog", "a+") as cmtfs:
                                     cmtfs.write('{0}\n'.format(comment.id))
