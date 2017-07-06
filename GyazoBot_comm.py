@@ -62,7 +62,10 @@ def main():
 
     regex = '(?<!\w\.)gyazo\.com/\w{32}'
 
-    reply_template_header = ('Hi, I\'m a bot that fixes Gyazo images for mobile users.\n\n')
+    edit_header = ('**[Fixed your link? Click here to recheck and delete this comment!](https://np.reddit.com/message'
+                   '/compose/?to=Gyazo_Bot&subject=delete&message=delete%20{id})**\n\n*****\n\n')
+
+    reply_template_header = ('Hi, I\'m a bot that links Gyazo images directly to save bandwidth.\n\n')
     reply_template_footer = ('^^[Sourcev2](https://github.com/Ptomerty/GyazoBot) ^^| '
                              '^^[Why?](https://github.com/Ptomerty/GyazoBot/blob/master/README.md) ^^| '
                              '^^[Creator](https://np.reddit.com/u/derpherp128) ^^| '
@@ -93,7 +96,9 @@ def main():
                         if a != reply_template_header:  # make sure there's an actual fixed link
                             try:
                                 a += reply_template_footer
-                                comment.reply(a)
+                                newpost = comment.reply(a)
+                                newpost.edit(edit_header.format(id=newpost.fullname.split('_')[1]) + newpost.body)
+
                                 comments.append(comment.id)
                                 with open("./commentlog", "a+") as cmtfs:
                                     cmtfs.write('{0}\n'.format(comment.id))
