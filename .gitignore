@@ -105,3 +105,5 @@ praw.ini
 comments
 posts
 ignore
+commentlog
+postlog
