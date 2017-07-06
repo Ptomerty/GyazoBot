@@ -2,13 +2,29 @@ import praw
 import os
 import praw.models
 import requests.exceptions
+import re
 
 ignore = []
 
-def checkMsg(message):
+def checkMsg(message, reddit):
     global ignore
+    regex = '(?<!\w\.)gyazo\.com/\w{32}'
+    splitbody = message.body.split(' ')
     if message.body == 'ignoreme' and message.author not in ignore:
         addToIgnore(message.author)
+    elif splitbody[0] == 'delete' and splitbody[1] is not '':
+        try:
+            checkcomment = reddit.comment(splitbody[1])
+            list = re.findall(regex, checkcomment.parent().body)
+            if not list and message.author == checkcomment.parent().author and checkcomment.author == 'Gyazo_Bot':
+                checkcomment.delete()
+                print('fixed comment deleted!')
+        except praw.exceptions.PRAWException as e:
+            # invalid comment probably
+            print('PRAW Exception: {}'.format(e))
+            pass
+        except Exception as e:
+            print(e)
 
 def addToIgnore(name):
     global ignore
@@ -29,7 +45,7 @@ def main():
         try:
             for item in reddit.inbox.stream():
                 if isinstance(item, praw.models.Message):
-                    checkMsg(item)
+                    checkMsg(item, reddit)
                     item.mark_read()
         except requests.exceptions.ReadTimeout:
             # misc timeout
