@@ -11,8 +11,10 @@ def checkMsg(message, reddit):
     regex = '(?<!\w\.)gyazo\.com/\w{32}'
     splitbody = message.body.split(' ')
     if message.body == 'ignoreme' and message.author not in ignore:
+        print('ignore found')
         addToIgnore(message.author)
     elif splitbody[0] == 'delete' and splitbody[1] is not '':
+        print('delete found')
         try:
             checkcomment = reddit.comment(splitbody[1])
             list = re.findall(regex, checkcomment.parent().body)

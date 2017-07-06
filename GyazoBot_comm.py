@@ -81,12 +81,14 @@ def main():
             for line in f:
                 comments.append(line.split("\n")[0])
     while True:
+        print('starting bot')
         try:
             for comment in reddit.subreddit('all').stream.comments():
                 refreshIgnore()
                 if comment.author not in ignore and comment.id not in comments:
                     list = re.findall(regex, comment.body)
                     if list:
+                        print('comment found')
                         a = reply_template_header
                         for url in list:
                             fixed = process(url)
