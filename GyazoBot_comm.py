@@ -2,10 +2,11 @@ import praw
 import praw.exceptions
 import requests
 import requests.exceptions
-import re
 import os
 import time
 import sys
+import configparser
+import re
 
 
 from imgurpython import ImgurClient
@@ -53,13 +54,6 @@ def refreshIgnore():
 
 
 def main():
-    client_id = sys.argv[1]
-    client_secret = sys.argv[2]
-
-    client = ImgurClient(client_id, client_secret)
-
-    reddit = praw.Reddit('GyazoBot', user_agent='GyazoBot by derpherp128')
-
     regex = '(?<!\w\.)gyazo\.com/\w{32}'
 
     edit_header = ('**[Fixed your link? Click here to recheck and delete this comment!](https://np.reddit.com/message'
@@ -80,6 +74,15 @@ def main():
         with open("./comments", "r") as f:
             for line in f:
                 comments.append(line.split("\n")[0])
+
+    config = configparser.ConfigParser()
+    config.read('auth.ini')
+    client_id = config.get('credentials', 'client_id')
+    client_secret = config.get('credentials', 'client_secret')
+    client = ImgurClient(client_id, client_secret)
+
+    reddit = praw.Reddit('GyazoBot', user_agent='GyazoBot by derpherp128')
+
     while True:
         print('starting bot')
         try:

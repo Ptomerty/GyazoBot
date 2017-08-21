@@ -5,6 +5,7 @@ import requests.exceptions
 import os
 import time
 import sys
+import configparser
 
 from imgurpython import ImgurClient
 
@@ -69,9 +70,10 @@ def main():
             for line in f:
                 posts.append(line.split("\n")[0])
 
-    client_id = sys.argv[1]
-    client_secret = sys.argv[2]
-
+    config = configparser.ConfigParser()
+    config.read('auth.ini')
+    client_id = config.get('credentials', 'client_id')
+    client_secret = config.get('credentials', 'client_secret')
     client = ImgurClient(client_id, client_secret)
 
     reddit = praw.Reddit('GyazoBot', user_agent='GyazoBot by derpherp128')

@@ -101,7 +101,6 @@ ENV/
 .mypy_cache/
 
 #praw ini settings w/ auth info
-praw.ini
 comments
 posts
 ignore
