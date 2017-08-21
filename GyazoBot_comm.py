@@ -80,8 +80,10 @@ def main():
     client_id = config.get('credentials', 'client_id')
     client_secret = config.get('credentials', 'client_secret')
     client = ImgurClient(client_id, client_secret)
+    print('imgur client launched')
 
     reddit = praw.Reddit('GyazoBot', user_agent='GyazoBot by derpherp128')
+    print('reddit client launched')
 
     while True:
         print('starting bot')
