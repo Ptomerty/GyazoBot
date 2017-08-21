@@ -106,3 +106,5 @@ posts
 ignore
 commentlog
 postlog
+auth.ini
+praw.ini
