@@ -19,7 +19,7 @@ def checkMsg(message, reddit):
             checkcomment = reddit.comment(splitbody[1])
             list = re.findall(regex, checkcomment.parent().body)
             if not list and message.author == checkcomment.parent().author and checkcomment.author == 'Gyazo_Bot':
-                checkcomment.edit("Thank you for fixing your link, and please do so before submitting in the future!")
+                checkcomment.delete()
                 print('fixed comment deleted!')
         except praw.exceptions.PRAWException as e:
             # invalid comment probably
