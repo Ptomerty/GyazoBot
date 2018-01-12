@@ -13,7 +13,7 @@ def checkMsg(message, reddit):
     if message.body == 'ignoreme' and message.author not in ignore:
         print('ignore found')
         addToIgnore(message.author)
-    elif splitbody[0] == 'delete' and splitbody[1] is not '':
+    elif len(splitbody) == 2 and splitbody[0] == 'delete' and splitbody[1] is not '':
         print('delete found')
         try:
             checkcomment = reddit.comment(splitbody[1])
