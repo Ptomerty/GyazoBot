@@ -38,7 +38,9 @@ def addToIgnore(name):
 
 def main():
     reddit = praw.Reddit('GyazoBot', user_agent='GyazoBot by derpherp128')
+    print('reddit client launched')
     global ignore
+
     if os.path.isfile("./ignore"):
         with open("./ignore", "r") as f:
             for line in f:
